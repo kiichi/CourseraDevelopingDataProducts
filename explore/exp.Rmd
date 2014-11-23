@@ -1,0 +1,44 @@
+---
+title: "exp"
+author: "Kiichi Takeuchi"
+date: "November 22, 2014"
+output: html_document
+---
+
+```{r,cache=TRUE}
+setwd("~/work/r/class/CourseraDevelopingDataProducts")
+demog<-read.csv("Demographic_Statistics_By_Zip_Code.csv")
+bench<-read.csv("2010___2011_NYC_Municipal_Building_Energy_Benchmarking_Results.csv")
+gas<-read.csv("Natural_Gas_Consumption_by_ZIP_Code_-_2010.csv")
+roof<-read.csv("NYC_Cool_Roofs_Buildings.csv")
+oil<-read.csv("Oil_Boilers_-_Detailed_Fuel_Consumption_and_Building_Data.csv")
+steam<-read.csv("Steam_Consumption_by_ZIP_Code_-_2010.csv")
+```
+
+
+```{r}
+names(bench)
+x<-bench$Natural.Gas.Utility..Con.Edison.or.National.Grid
+y<-bench$X2011.Total.GHG.Emissions..MtCO2e...
+c<-bench$Year.Built
+model<-lm(y~x)
+plot(x,y,col=c,pch=20)
+abline(model,col="red")
+```
+
+```{r}
+names(bench)
+x<-bench$X2011.Source.Energy.Intensity..kBtu.Sq..Ft..
+y<-bench$X2011.Total.GHG.Emissions..MtCO2e...
+c<-bench$Year.Built
+model<-lm(y~x)
+plot(x,y,col=c,pch=20)
+abline(model,col="red")
+```
+
+
+```{r}
+qplot(X2010.Current.Source.Energy.Intensity..kBtu.Sq..Ft..,X2010.Current.Total.GHG.Emissions..MtCO2e..â..,data=bench[bench$Agency=='DOE'&bench$X2010.Current.Source.Energy.Intensity..kBtu.Sq..Ft..<500&bench$X2010.Current.Total.GHG.Emissions..MtCO2e..â..<5000,],col=as.numeric(X2010.Rating..))
+
+qplot(X2011.Source.Energy.Intensity..kBtu.Sq..Ft..,X2011.Total.GHG.Emissions..MtCO2e...,data=bench[bench$Agency=='DOE'&bench$X2011.Source.Energy.Intensity..kBtu.Sq..Ft..<500&bench$X2011.Total.GHG.Emissions..MtCO2e...<5000,],col=as.numeric(X2011.Rating..))
+```

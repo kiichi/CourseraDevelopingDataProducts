@@ -1,0 +1,194 @@
+---
+title: "exp2"
+author: "Kiichi Takeuchi"
+date: "November 22, 2014"
+output: html_document
+---
+
+```
+[1] "MANHATTAN.CONDOMINIUM.PROPERTY.Boro.Block.Lot"         
+ [2] "MANHATTAN.CONDOMINIUM.PROPERTY.Condo.Section"          
+ [3] "MANHATTAN.CONDOMINIUM.PROPERTY.Address"                
+ [4] "MANHATTAN.CONDOMINIUM.PROPERTY.Neighborhood"           
+ [5] "MANHATTAN.CONDOMINIUM.PROPERTY.Building.Classification"
+ [6] "MANHATTAN.CONDOMINIUM.PROPERTY.Total.Units"            
+ [7] "MANHATTAN.CONDOMINIUM.PROPERTY.Year.Built"             
+ [8] "MANHATTAN.CONDOMINIUM.PROPERTY.Gross.SqFt"             
+ [9] "MANHATTAN.CONDOMINIUM.PROPERTY.Est..Gross.Income"      
+[10] "MANHATTAN.CONDOMINIUM.PROPERTY.Gross.Income.per.SqFt"  
+[11] "MANHATTAN.CONDOMINIUM.PROPERTY.Full.Market.Value"      
+[12] "MANHATTAN.CONDOMINIUM.PROPERTY.Market.Value.per.SqFt"  
+[13] "COMPARABLE.RENTAL.1.Boro.Block.Lot"                    
+[14] "COMPARABLE.RENTAL.1.Address"                           
+[15] "COMPARABLE.RENTAL.1..Neighborhood"                     
+[16] "COMPARABLE.RENTAL.1..Building.Classification"          
+[17] "COMPARABLE.RENTAL.1..Total.Units"                      
+[18] "COMPARABLE.RENTAL.1..Year.Built"                       
+[19] "COMPARABLE.RENTAL.1..Gross.SqFt"                       
+[20] "COMPARABLE.RENTAL.1..Est..Gross.Income"                
+[21] "COMPARABLE.RENTAL.1..Gross.Income.per.SqFt"            
+[22] "COMPARABLE.RENTAL.1.Full.Market.Value"                 
+[23] "COMPARABLE.RENTAL.1..Market.Value.per.SqFt"            
+[24] "COMPARABLE.RENTAL.1..Dist..from.Coop.in.miles"         
+[25] "COMPARABLE.RENTAL.2..Boro.Block.Lot"                   
+[26] "COMPARABLE.RENTAL.2..Address"                          
+[27] "COMPARABLE.RENTAL.2..Neighborhood"                     
+[28] "COMPARABLE.RENTAL.2..Building.Classification"          
+[29] "COMPARABLE.RENTAL.2..Total.Units"                      
+[30] "COMPARABLE.RENTAL.2..Year.Built"                       
+[31] "COMPARABLE.RENTAL.2..Gross.SqFt"                       
+[32] "COMPARABLE.RENTAL.2..Est..Gross.Income"                
+[33] "COMPARABLE.RENTAL.2..Gross.Income.per.SqFt"            
+[34] "COMPARABLE.RENTAL.2..Full.Market.Value"                
+[35] "COMPARABLE.RENTAL.2..Market.Value.per.SqFt"            
+[36] "COMPARABLE.RENTAL.2..Dist..from.Coop.in.miles"  
+```
+
+
+```{r}
+data<-read.csv('rental.csv')
+model<-lm(MANHATTAN.CONDOMINIUM.PROPERTY.Gross.Income.per.SqFt~MANHATTAN.CONDOMINIUM.PROPERTY.Neighborhood+MANHATTAN.CONDOMINIUM.PROPERTY.Building.Classification+MANHATTAN.CONDOMINIUM.PROPERTY.Year.Built+MANHATTAN.CONDOMINIUM.PROPERTY.Total.Units,data=data)
+
+```
+
+
+
+
+
+
+```{r}
+data2<-data[data$MANHATTAN.CONDOMINIUM.PROPERTY.Year.Built>1800,]
+
+qplot(MANHATTAN.CONDOMINIUM.PROPERTY.Year.Built,MANHATTAN.CONDOMINIUM.PROPERTY.Gross.Income.per.SqFt,data=data2) + stat_smooth(method="lm")
+#+ coord_polar()
+
+#condo year x val
+qplot(MANHATTAN.CONDOMINIUM.PROPERTY.Year.Built,MANHATTAN.CONDOMINIUM.PROPERTY.Market.Value.per.SqFt,data=data2) + stat_smooth(method="lm")
+
+qplot(MANHATTAN.CONDOMINIUM.PROPERTY.Year.Built,MANHATTAN.CONDOMINIUM.PROPERTY.Market.Value.per.SqFt,data=data2,col=MANHATTAN.CONDOMINIUM.PROPERTY.Building.Classification) + stat_smooth(method="lm")
+
+qplot(MANHATTAN.CONDOMINIUM.PROPERTY.Year.Built,MANHATTAN.CONDOMINIUM.PROPERTY.Market.Value.per.SqFt,data=data2,col=MANHATTAN.CONDOMINIUM.PROPERTY.Neighborhood)
+
+qplot(COMPARABLE.RENTAL.1..Building.Classification,COMPARABLE.RENTAL.1..Gross.Income.per.SqFt,data=data2,col=COMPARABLE.RENTAL.1..Building.Classification) 
+
+#rental year x val
+qplot(COMPARABLE.RENTAL.1..Year.Built,COMPARABLE.RENTAL.1..Market.Value.per.SqFt,data=data2) + stat_smooth(method="lm")
+
+
+model<-glm(COMPARABLE.RENTAL.1..Gross.Income.per.SqFt~COMPARABLE.RENTAL.1..Year.Built+COMPARABLE.RENTAL.1..Total.Units,data=data2)
+
+
+```
+
+
+
+```
+[1] "MANHATTAN.â...CONDOMINIUMS.COMPARABLE.PROPERTIES.â...Boro.Block.Lot"         
+ [2] "MANHATTAN.â...CONDOMINIUMS.COMPARABLE.PROPERTIES.â...Condo.Section"          
+ [3] "MANHATTAN.â...CONDOMINIUMS.COMPARABLE.PROPERTIES.â...Address"                
+ [4] "MANHATTAN.â...CONDOMINIUMS.COMPARABLE.PROPERTIES.â...Neighborhood"           
+ [5] "MANHATTAN.â...CONDOMINIUMS.COMPARABLE.PROPERTIES.â...Building.Classification"
+ [6] "MANHATTAN.â...CONDOMINIUMS.COMPARABLE.PROPERTIES.â...Total.Units"            
+ [7] "MANHATTAN.â...CONDOMINIUMS.COMPARABLE.PROPERTIES.â...Year.Built"             
+ [8] "MANHATTAN.â...CONDOMINIUMS.COMPARABLE.PROPERTIES.â...Gross.SqFt"             
+ [9] "MANHATTAN.â...CONDOMINIUMS.COMPARABLE.PROPERTIES.â...Estimated.Gross.Income" 
+[10] "MANHATTAN.â...CONDOMINIUMS.COMPARABLE.PROPERTIES.â...Gross.Income.per.SqFt"  
+[11] "MANHATTAN.â...CONDOMINIUMS.COMPARABLE.PROPERTIES.â...Estimated.Expense"      
+[12] "MANHATTAN.â...CONDOMINIUMS.COMPARABLE.PROPERTIES.â...Expense.per.SqFt"       
+[13] "MANHATTAN.â...CONDOMINIUMS.COMPARABLE.PROPERTIES.â...Net.Operating.Income"   
+[14] "MANHATTAN.â...CONDOMINIUMS.COMPARABLE.PROPERTIES.â...Full.Market.Value"      
+[15] "MANHATTAN.â...CONDOMINIUMS.COMPARABLE.PROPERTIES.â...Market.Value.per.SqFt"  
+[16] "COMPARABLE.RENTAL.â...1.â...Boro.Block.Lot"                                  
+[17] "COMPARABLE.RENTAL.â...1.â...Address"                                         
+[18] "COMPARABLE.RENTAL.â...1.â...Neighborhood"                                    
+[19] "COMPARABLE.RENTAL.â...1.â...Building.Classification"                         
+[20] "COMPARABLE.RENTAL.â...1.â...Total.Units"                                     
+[21] "COMPARABLE.RENTAL.â...1.â...Year.Built"                                      
+[22] "COMPARABLE.RENTAL.â...1.â...Gross.SqFt"                                      
+[23] "COMPARABLE.RENTAL.â...1.â...Estimated.Gross.Income"                          
+[24] "COMPARABLE.RENTAL.â...1.â...Gross.Income.per.SqFt"                           
+[25] "COMPARABLE.RENTAL.â...1.â...Estimated.Expense"                               
+[26] "COMPARABLE.RENTAL.â...1.â...Expense.per.SqFt"                                
+[27] "COMPARABLE.RENTAL.â...1.â...Net.Operating.Income"                            
+[28] "COMPARABLE.RENTAL.â...1.â...Full.Market.Value"                               
+[29] "COMPARABLE.RENTAL.â...1.â...Market.Value.per.SqFt"                           
+[30] "COMPARABLE.RENTAL.â...1.â...Distance.from.Condo.in.miles"                    
+[31] "COMPARABLE.RENTAL.â...2.â...Boro.Block.Lot"                                  
+[32] "COMPARABLE.RENTAL.â...2.â...Address"                                         
+[33] "COMPARABLE.RENTAL.â...2.â...Neighborhood"                                    
+[34] "COMPARABLE.RENTAL.â...2.â...Building.Classification"                         
+[35] "COMPARABLE.RENTAL.â...2.â...Total.Units"                                     
+[36] "COMPARABLE.RENTAL.â...2.â...Year.Built"                                      
+[37] "COMPARABLE.RENTAL.â...2.â...Gross.SqFt"                                      
+[38] "COMPARABLE.RENTAL.â...2.â...Estimated.Gross.Income"                          
+[39] "COMPARABLE.RENTAL.â...2.â...Gross.Income.per.SqFt"                           
+[40] "COMPARABLE.RENTAL.â...2.â...Estimated.Expense"                               
+[41] "COMPARABLE.RENTAL.â...2.â...Expense.per.SqFt"                                
+[42] "COMPARABLE.RENTAL.â...2.â...Net.Operating.Income"                            
+[43] "COMPARABLE.RENTAL.â...2.â...Full.Market.Value"                               
+[44] "COMPARABLE.RENTAL.â...2.â...Market.Value.per.SqFt"                           
+[45] "COMPARABLE.RENTAL.â...2.â...Distance.from.Condo.in.miles"                    
+[46] "COMPARABLE.RENTAL.â...3.â...Boro.Block.Lot"                                  
+[47] "COMPARABLE.RENTAL.â...3.â...Address"                                         
+[48] "COMPARABLE.RENTAL.â...3.â...Neighborhood"                                    
+[49] "COMPARABLE.RENTAL.â...3.â...Building.Classification"                         
+[50] "COMPARABLE.RENTAL.â...3.â...Total.Units"                                     
+[51] "COMPARABLE.RENTAL.â...3.â...Year.Built"                                      
+[52] "COMPARABLE.RENTAL.â...3.â...Gross.SqFt"                                      
+[53] "COMPARABLE.RENTAL.â...3.â...Estimated.Gross.Income"                          
+[54] "COMPARABLE.RENTAL.â...3.â...Gross.Income.per.SqFt"                           
+[55] "COMPARABLE.RENTAL.â...3.â...Estimated.Expense"                               
+[56] "COMPARABLE.RENTAL.â...3.â...Expense.per.SqFt"                                
+[57] "COMPARABLE.RENTAL.â...3.â...Net.Operating.Income"                            
+[58] "COMPARABLE.RENTAL.â...3.â...Full.Market.Value"                               
+[59] "COMPARABLE.RENTAL.â...3.â...Market.Value.per.SqFt"                           
+[60] "COMPARABLE.RENTAL.â...3.â...Distance.from.Condo.in.miles"  
+
+
+
+
+
+
+ [1] "C.Boro.Block.Lot"                "C.Condo.Section"                
+ [3] "C.Address"                       "C.Neighborhood"                 
+ [5] "C.Building.Classification"       "C.Total.Units"                  
+ [7] "C.Year.Built"                    "C.Gross.SqFt"                   
+ [9] "C.Estimated.Gross.Income"        "C.Gross.Income.per.SqFt"        
+[11] "C.Estimated.Expense"             "C.Expense.per.SqFt"             
+[13] "C.Net.Operating.Income"          "C.Full.Market.Value"            
+[15] "C.Market.Value.per.SqFt"         "R1.Boro.Block.Lot"              
+[17] "R1.Address"                      "R1.Neighborhood"                
+[19] "R1.Building.Classification"      "R1.Total.Units"                 
+[21] "R1.Year.Built"                   "R1.Gross.SqFt"                  
+[23] "R1.Estimated.Gross.Income"       "R1.Gross.Income.per.SqFt"       
+[25] "R1.Estimated.Expense"            "R1.Expense.per.SqFt"            
+[27] "R1.Net.Operating.Income"         "R1.Full.Market.Value"           
+[29] "R1.Market.Value.per.SqFt"        "R1.Distance.from.Condo.in.miles"
+[31] "R2.Boro.Block.Lot"               "R2.Address"                     
+[33] "R2.Neighborhood"                 "R2.Building.Classification"     
+[35] "R2.Total.Units"                  "R2.Year.Built"                  
+[37] "R2.Gross.SqFt"                   "R2.Estimated.Gross.Income"      
+[39] "R2.Gross.Income.per.SqFt"        "R2.Estimated.Expense"           
+[41] "R2.Expense.per.SqFt"             "R2.Net.Operating.Income"        
+[43] "R2.Full.Market.Value"            "R2.Market.Value.per.SqFt"       
+[45] "R2.Distance.from.Condo.in.miles" "R3.Boro.Block.Lot"              
+[47] "R3.Address"                      "R3.Neighborhood"                
+[49] "R3.Building.Classification"      "R3.Total.Units"                 
+[51] "R3.Year.Built"                   "R3.Gross.SqFt"                  
+[53] "R3.Estimated.Gross.Income"       "R3.Gross.Income.per.SqFt"       
+[55] "R3.Estimated.Expense"            "R3.Expense.per.SqFt"            
+[57] "R3.Net.Operating.Income"         "R3.Full.Market.Value"           
+[59] "R3.Market.Value.per.SqFt"        "R3.Distance.from.Condo.in.miles"
+```
+
+```{r}
+#https://data.cityofnewyork.us/Housing-Development/DOF-Condominium-comparable-rental-income-Manhattan/ikqj-pyhc
+d<-read.csv("rental1.csv")
+names(d)<-gsub('\\.\\.','.',gsub('MANHATTAN.CONDOMINIUM.PROPERTY','C',gsub('COMPARABLE.RENTAL.','R',names(d))))
+
+#https://data.cityofnewyork.us/Housing-Development/DOF-Condominium-Comparable-Rental-Income-Manhattan/dvzp-h4k9
+d<-read.csv("rental2.csv")
+names(d)<-gsub('\\.\\.','.',gsub('MANHATTAN.CONDOMINIUMS.COMPARABLE.PROPERTIES','C',gsub('.â..','',gsub('COMPARABLE.RENTAL.â...','R',names(d)))))
+
+qplot(C.Market.Value.per.SqFt,R2.Gross.Income.per.SqFt,data=d)
+```

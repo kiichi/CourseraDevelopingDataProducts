@@ -1,0 +1,112 @@
+Realestate Market Analysis in Manhattan
+========================================================
+author: Kiichi Takeuchi
+date: 11/23/2014
+
+Motivation
+========================================================
+
+How do we find the best ROI (Return of Investment) realestate in Manhattan? 
+
+- Higher Rental Gross Income (=Rental Gross Income per SqFt)
+- Lower Market Value (=Condo Market Value per SqFt)
+
+Any other related factors?
+
+- By Neighborhood?
+- By Classification?
+- By Year Built?
+
+Data Source: NYC Open Data DOF Condominium Comparable Rental Income
+
+```{r,echo=FALSE}
+d<-read.csv("../MyApp/rental2.csv")
+names(d)<-gsub('\\.\\.','.',gsub('MANHATTAN.CONDOMINIUMS.COMPARABLE.PROPERTIES','C',gsub('.â..','',gsub('COMPARABLE.RENTAL.â...','R',names(d)))))
+d<-d[!is.na(d$C.Market.Value.per.SqFt)
+     &!is.na(d$R1.Gross.Income.per.SqFt)
+     &!is.na(d$C.Year.Built)
+     &d$C.Year.Built>1900
+     &d$C.Full.Market.Value<50000000,]
+d$C.Neighborhood<-gsub('WASHINGTON HEIGHTS.*','WASH HTS',gsub('GREENWICH VILLAGE-.*','GR VILLAGE',gsub(' SIDE','',d$C.Neighborhood)))
+d$C.Neighborhood<-gsub('GR VILLAGE-.*','GR VILLAGE',d$C.Neighborhood)
+d$C.Neighborhood<-gsub('WASH HTS .*','WASH HTS',d$C.Neighborhood)
+d$C.Neighborhood<-gsub('HARLEM-.*','HARLEM',d$C.Neighborhood)
+d$C.Neighborhood<-gsub('UPPER EAST .*','UPPER EAST',d$C.Neighborhood)
+d$C.Neighborhood<-gsub('UPPER WEST .*','UPPER EAST',d$C.Neighborhood)
+d$C.Neighborhood<-gsub('MIDTOWN .*','MIDTOWN',d$C.Neighborhood)
+d$C.Neighborhood<-gsub('CIVIC CENTER','OTHER',d$C.Neighborhood)
+d$C.Neighborhood<-gsub('SOUTHBRIDGE','OTHER',d$C.Neighborhood)
+d$C.Neighborhood<-gsub('JAVITS CENTER','OTHER',d$C.Neighborhood)
+d$C.Neighborhood<-gsub('KIPS BAY','OTHER',d$C.Neighborhood)
+d$C.Neighborhood<-gsub('INWOOD','OTHER',d$C.Neighborhood)
+d$C.Building.Classification<-gsub('-CONDOMINIUM','',d$C.Building.Classification)
+clabel<-function(str){
+  gsub('\\.',' ',gsub('R1\\.','Rental ',gsub('C\\.','Condo ',str)))
+}
+d$Monotone<-0 #create static value column for default color
+```
+
+Data Processing and Visualization
+========================================================
+After applying data cleansing processes, such as fixing long column name, collapsing multiple regions, and removing outliers. ggplot2 is used for graphing library.
+
+```{r,echo=FALSE}
+library(ggplot2)
+drawGraph<-function(d,input){
+        if (length(input$nei)>0){
+          d<-d[d$C.Neighborhood %in% input$nei,]
+        }
+        xl<-xlim(min(d[,c(input$x)]), max(d[,c(input$x)]))
+        yl<-ylim(min(d[,c(input$y)]), max(d[,c(input$y)]))
+        g<-ggplot(data=d, aes_string(x=input$x,y=input$y,color=input$color))
+        g<-g+geom_point(aes(size = 16,alpha=0.8))
+        g<-g+xlab(clabel(input$x))
+        g<-g+ylab(clabel(input$y))
+        g<-g+xl
+        g<-g+yl
+        if (input$color=="C.Neighborhood"){
+          g<-g+guides(col=guide_legend(ncol=2))
+        }      
+        if (input$color!="C.Building.Classification" && input$color!="C.Neighborhood"){
+          g<-g+geom_smooth(method="lm")  
+        }
+        g
+}
+```
+
+
+```{r,echo=FALSE,fig.width=12}
+input<-data.frame(x=NA,y=NA)
+input$x<-'C.Market.Value.per.SqFt'
+input$y<-'R1.Gross.Income.per.SqFt'
+#input$color='C.Neighborhood'
+input$color='Monotone'
+drawGraph(d,input)
+```
+
+Visualization
+========================================================
+Possible Good Investments: Relatively low price v.s high return
+
+![](Realestate_Market_Analysis_in_Manhattan3.png)
+
+
+Colorizing by Neighborhood
+========================================================
+```{r,echo=FALSE,fig.width=12}
+input<-data.frame(x=NA,y=NA)
+input$x<-'C.Market.Value.per.SqFt'
+input$y<-'R1.Gross.Income.per.SqFt'
+input$color='C.Neighborhood'
+#input$nei<-c('CLINTON','MANHATTAN VALLEY')
+drawGraph(d,input)
+```
+
+- By Expense
+- By Units
+- By Classifications
+
+Find anything interesting? Try different filters and color options.
+
+
+
